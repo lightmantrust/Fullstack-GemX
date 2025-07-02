@@ -1,1 +1,30 @@
+name: Fullstack CI
 
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install API test deps
+        working-directory: api
+        run: |
+          npm install --save-dev vitest
+          npx vitest run
+
+      - name: Install frontend deps and build
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
